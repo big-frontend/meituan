@@ -2,27 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:spacecraftflutter/routes.dart';
 
-class SplashPage extends StatefulWidget {
-  SplashPage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class HomePage extends StatefulWidget {
+  const HomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
-
-  void a() {}
 }
 
-class _MyHomePageState extends State<SplashPage> {
+class _MyHomePageState extends State<HomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
@@ -44,12 +31,11 @@ class _MyHomePageState extends State<SplashPage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    print('build steup');
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('home'),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -88,5 +74,11 @@ class _MyHomePageState extends State<SplashPage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("_MyHomePageStater Dependencies change");
   }
 }

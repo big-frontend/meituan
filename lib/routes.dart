@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:spacecraftflutter/main.dart';
+import 'package:spacecraftflutter/home.dart';
+import 'package:spacecraftflutter/splash.dart';
 
 typedef PathWidgetBuilder = Widget Function(BuildContext, String);
 
@@ -11,7 +13,11 @@ class Path {
 }
 
 class RouteConfiguration {
-  static List<Path> paths = [Path(r'^/', (context, match) => const RootPage())];
+  static List<Path> paths = [
+    Path(r'^/', (context, match) => const SplashPage()),
+    Path(r'^/home', (context, match) => const HomePage()),
+    // Path(r'^/home', (context, match) => const HomePage())
+  ];
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     for (final path in paths) {
