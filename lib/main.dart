@@ -29,15 +29,24 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+    // return MaterialApp(
+    //   title: app_title,
+    //   theme: ThemeData(
+    //     primarySwatch: Colors.blue,
+    //     visualDensity: VisualDensity.adaptivePlatformDensity,
+    //   ),
+    //   // home: MyHomePage(title: 'Flutter Demo Home Page'),
+    //   onGenerateRoute: RouteConfiguration.onGenerateRoute,
+    // );
   }
 }
 
-class RootPage extends StatelessWidget {
-  const RootPage({Key key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return ApplyOptions(
-      child: SplashPage(),
-    );
-  }
-}
+// class RootPage extends StatelessWidget {
+//   const RootPage({Key key}) : super(key: key);
+//   @override
+//   Widget build(BuildContext context) {
+//     return ApplyOptions(
+//       child: SplashPage(),
+//     );
+//   }
+// }

@@ -25,6 +25,26 @@ class Options {
     Locale locale,
   });
   final ThemeMode themeMode;
+  SystemUiOverlayStyle resolvedSystemUiOverlayStyle() {
+    Brightness brightness;
+    switch (themeMode) {
+      case ThemeMode.light:
+        brightness = Brightness.light;
+        break;
+      case ThemeMode.dark:
+        brightness = Brightness.dark;
+        break;
+      default:
+        brightness = WidgetsBinding.instance.window.platformBrightness;
+    }
+
+    final overlayStyle = brightness == Brightness.dark
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark;
+
+    return overlayStyle;
+  }
+
   static Options of(BuildContext context) {
     final scope =
         context.dependOnInheritedWidgetOfExactType<_SharedDataScope>();
