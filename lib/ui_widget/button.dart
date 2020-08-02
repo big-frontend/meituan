@@ -1,51 +1,79 @@
 import 'package:flutter/material.dart';
 
-class RightButton extends StatelessWidget {
-  const RightButton({
-    Key key,
-    this.label,
-    this.icon,
-    @required this.onPressed,
-  });
+class LayoutButton extends StatelessWidget {
+  const LayoutButton(
+      {Key key, this.label, this.icon, @required this.onPressed, this.mode});
   final Widget label;
   final Widget icon;
   final VoidCallback onPressed;
+  final LayoutMode mode;
   @override
   Widget build(BuildContext context) {
-    // return Row(
-    //   children: <Widget>[
-    //     Text("吃地瓜的电解质", style: TextStyle(color: Color(0xfff3f3f3))),
-    //   ],
-    // );
-    // RaisedButton.icon()
-    return Row(
-      // mainAxisAlignment: MainAxisAlignment.end,
-      // crossAxisAlignment: CrossAxisAlignment.end,
-      // verticalDirection: VerticalDirection.down,
-      children: <Widget>[label, icon],
+    List<Widget> children = new List();
+    Axis d;
+
+    if (mode == LayoutMode.leftText) {
+      children.add(label);
+      children.add(icon);
+      d = Axis.horizontal;
+    } else if (mode == LayoutMode.topText) {
+      children.add(label);
+      children.add(icon);
+      d = Axis.vertical;
+    } else if (mode == LayoutMode.rightText) {
+      children.add(icon);
+      children.add(label);
+      d = Axis.horizontal;
+    } else if (mode == LayoutMode.bottomText) {
+      children.add(icon);
+      children.add(label);
+      d = Axis.vertical;
+    }
+    return Flex(
+      direction: d,
+      children: children,
     );
   }
 
   // static void icon(Widget label, Widget icon, VoidCallback onPresse) {
-  // return RightButton(label, icon, onPressed);
+  // return LayoutButton(label, icon, onPressed);
   // }
-  factory RightButton.icon(
-      {Key key, Widget label, Widget icon, @required VoidCallback onPressed}) {
-    return _RightButtonWithIcon(
+  factory LayoutButton.icon({
+    Key key,
+    Widget label,
+    Widget icon,
+    LayoutMode mode,
+    @required VoidCallback onPressed,
+  }) {
+    return _LayoutButtonWithIcon(
       key: key,
       label: label,
       icon: icon,
+      mode: mode,
       onPressed: onPressed,
     );
   }
 }
 
-class _RightButtonWithIcon extends RightButton
+class _LayoutButtonWithIcon extends LayoutButton
     with MaterialButtonWithIconMixin {
-  _RightButtonWithIcon({
+  _LayoutButtonWithIcon({
     Key key,
     Widget label,
     Widget icon,
+    LayoutMode mode,
     @required onPressed,
-  }) : super(key: key, label: label, icon: icon, onPressed: onPressed);
+  }) : super(
+            key: key,
+            label: label,
+            icon: icon,
+            mode: mode,
+            onPressed: onPressed);
+}
+
+enum LayoutMode {
+  leftText,
+  topText,
+  rightText,
+  bottomText,
 }

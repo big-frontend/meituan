@@ -22,16 +22,18 @@ class TextIconItem extends StatelessWidget {
   //   this.rightIcon,
   // });
 
-  TextIconItem({@required Item item})
+  TextIconItem({double height, @required Item item})
       : leftText = item.leftText,
         leftIcon = item.leftIcon,
         rightText = item.rightText,
-        rightIcon = item.rightIcon;
+        rightIcon = item.rightIcon,
+        height = height;
 
   final String leftText;
   final String leftIcon;
   final String rightText;
   final String rightIcon;
+  final double height;
   @override
   Widget build(BuildContext context) {
     List<Widget> left = new List<Widget>();
@@ -72,7 +74,7 @@ class TextIconItem extends StatelessWidget {
       );
     }
     right.add(Container(margin: EdgeInsets.only(left: 8), child: rightIcon));
-    return Container(
+    Container c = Container(
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
@@ -89,6 +91,108 @@ class TextIconItem extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+
+    return height != null
+        ? SizedBox(
+            height: height,
+            child: c,
+          )
+        : c;
+  }
+}
+
+class ImageText {
+  ImageText({this.height, this.url, this.title, this.subtitle, this.price});
+  final double height;
+  final String url;
+  final String title;
+  final String subtitle;
+  final String price;
+}
+
+class ImageTextItem extends StatelessWidget {
+  ImageTextItem({this.item});
+  final ImageText item;
+  @override
+  Widget build(BuildContext context) {
+    Container c = Container(
+      margin: EdgeInsets.only(left: 8, right: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          // Image.asset(item.url, width: 50, height: 50),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: FadeInImage.assetNetwork(
+              placeholder: 'assets/bg_customReview_image_default.png',
+              image: item.url,
+              imageErrorBuilder: (BuildContext c, Object o, StackTrace s) {},
+              width: 90,
+              height: 90,
+            ),
+          ),
+          // ListTile(
+          //   title:
+          //       Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
+          //   subtitle:
+          //       Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
+          // ),
+
+          Container(
+            margin: EdgeInsets.only(left: 18),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // ListTile(
+                //   title: Text(item.subtitle,
+                //       maxLines: 1,
+                //       style: TextStyle(fontWeight: FontWeight.normal)),
+                // ),
+
+                Text(
+                  item.price,
+                  style: TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+    // return item.height != null
+    //     ? SizedBox(
+    //         height: item.height,
+    //         child: c,
+    //       )
+    //     : c;
+    return Align(
+      alignment: Alignment.center,
+      child: ListTile(
+        trailing: Text(
+          item.price,
+          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+        ),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: FadeInImage.assetNetwork(
+            placeholder: 'assets/bg_customReview_image_default.png',
+            image: item.url,
+            imageErrorBuilder: (BuildContext c, Object o, StackTrace s) {},
+            // width: 100,
+            // height: 100,
+          ),
+        ),
+        subtitle: Text(
+          item.subtitle,
+        ),
+        title: Text(
+          item.title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

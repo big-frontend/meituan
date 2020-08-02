@@ -81,7 +81,7 @@ class _Screen_4_State extends State<Screen_4> {
                       height: 50,
                       child: Column(
                         children: <Widget>[
-                          RightButton.icon(
+                          LayoutButton.icon(
                             label: Text(
                               "吃地瓜的电解质",
                               style: TextStyle(color: Color(0xfff3f3f3)),
@@ -92,8 +92,9 @@ class _Screen_4_State extends State<Screen_4> {
                               width: 19.0,
                             ),
                             onPressed: () => print('吃地瓜的电解质'),
+                            mode: LayoutMode.leftText,
                           ),
-                          RightButton.icon(
+                          LayoutButton.icon(
                             onPressed: () => print('个人信息'),
                             label: Text("个人信息",
                                 style: TextStyle(
@@ -103,6 +104,7 @@ class _Screen_4_State extends State<Screen_4> {
                               color: Color(0xfff3f3f3),
                               size: 18,
                             ),
+                            mode: LayoutMode.leftText,
                           ),
                         ],
                       ),

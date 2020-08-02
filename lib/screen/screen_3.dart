@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spacecraftflutter/share_data.dart';
+import 'package:spacecraftflutter/ui_widget/item.dart';
+import 'package:spacecraftflutter/ui_widget/button.dart';
 
 class Screen_3 extends StatefulWidget {
   @override
@@ -19,35 +21,116 @@ class _Screen_3_State extends State<Screen_3> {
   @override
   Widget build(BuildContext context) {
     Options opt = Options.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text('Screen_3 ${opt.themeMode}'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: Text('change theme mode'),
-              onPressed: () => Options.update(
-                context,
-                Options(
-                    themeMode: opt.themeMode == ThemeMode.dark
-                        ? ThemeMode.light
-                        : ThemeMode.dark),
+    return Material(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 161.0,
+            leading: Container(
+              margin: EdgeInsets.only(left: 15),
+              alignment: Alignment.center,
+              child: Text(
+                '订单',
+                style: TextStyle(color: Colors.black, fontSize: 18),
               ),
             ),
-            Text(
-              'You have pushed the button this many times:1',
+            backgroundColor: Colors.white,
+            elevation: 10,
+            automaticallyImplyLeading: false,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Padding(
+                  padding: EdgeInsets.only(
+                      top: AppBar().preferredSize.height +
+                          MediaQuery.of(context).padding.top),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: TextIconItem(
+                          height: 40,
+                          item: Item(leftText: '我的订单', rightText: '全部订单'),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          LayoutButton.icon(
+                            label: Text("待付款"),
+                            icon: Image.asset(
+                              'images/order/order_tab_need_pay.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            mode: LayoutMode.bottomText,
+                          ),
+                          LayoutButton.icon(
+                            label: Text("待使用"),
+                            icon: Image.asset(
+                              'images/order/order_tab_need_use.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            mode: LayoutMode.bottomText,
+                          ),
+                          LayoutButton.icon(
+                            label: Text("待评价"),
+                            icon: Image.asset(
+                              'images/order/order_tab_need_review.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            mode: LayoutMode.bottomText,
+                          ),
+                          LayoutButton.icon(
+                            label: Text("退款/售后"),
+                            icon: Image.asset(
+                              'images/order/order_tab_needoffer_aftersale.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            mode: LayoutMode.bottomText,
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        decoration: BoxDecoration(
+                            // 下滑线浅灰色，宽度1像素
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey[200], width: 10.0))),
+                      )
+                    ],
+                  )),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+          ),
+          //PreferredSize(
+          // preferredSize: Size.fromHeight(40.0),
+          // ),
+          SliverFixedExtentList(
+            itemExtent: 100, //100
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Container(
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(width: 0.3))),
+                    child: ImageTextItem(
+                      item: ImageText(
+                        title: '南京大排档',
+                        subtitle:
+                            '全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单',
+                        price: "85元",
+                        // url:
+                        //     "http://p1.meituan.net/w.h/deal/91b3517c6cab016fb71a23b98fb56acf56588.jpg@0_6_640_387a%7C388h_640w_2e_100q",
+                        url: 'https://picsum.photos/250?image=9',
+                      ),
+                    ));
+              },
+              childCount: 50, //50个列表项
             ),
-            Image.asset('images/home/icon_homepage_foottreat_category.png'),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
