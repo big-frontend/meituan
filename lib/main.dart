@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:spacecraftflutter/routes.dart';
-import 'package:spacecraftflutter/splash.dart';
-import 'package:spacecraftflutter/share_data.dart';
+import 'package:meituan/routes.dart';
+import 'package:meituan/splash.dart';
+import 'package:meituan/share_data.dart';
 import 'package:flutter/rendering.dart';
 
 void main() {

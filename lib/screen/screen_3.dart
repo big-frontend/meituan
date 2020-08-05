@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:spacecraftflutter/share_data.dart';
-import 'package:spacecraftflutter/ui_widget/item.dart';
-import 'package:spacecraftflutter/ui_widget/button.dart';
-import 'package:spacecraftflutter/ui_widget/list.dart';
+import 'package:meituan/share_data.dart';
+import 'package:meituan/ui_widget/item.dart';
+import 'package:meituan/ui_widget/button.dart';
+import 'package:meituan/ui_widget/list.dart';
 import 'dart:math';
 import 'package:flutter/src/foundation/change_notifier.dart';
 

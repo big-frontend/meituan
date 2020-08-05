@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spacecraftflutter/color.dart';
+import 'package:meituan/color.dart';
 
 class ListSearchPage extends SearchDelegate<String> {
   List<String> list;

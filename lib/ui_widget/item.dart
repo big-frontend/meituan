@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spacecraftflutter/util.dart';
+import 'package:meituan/util.dart';
 
 class Item {
   Item({

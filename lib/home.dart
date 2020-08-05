@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:spacecraftflutter/routes.dart';
-import 'package:spacecraftflutter/share_data.dart';
+import 'package:meituan/routes.dart';
+import 'package:meituan/share_data.dart';
 import 'package:flutter/services.dart';
-import 'package:spacecraftflutter/screen/screen_1.dart';
-import 'package:spacecraftflutter/screen/screen_2.dart';
-import 'package:spacecraftflutter/screen/screen_3.dart';
-import 'package:spacecraftflutter/screen/screen_4.dart';
-import 'package:spacecraftflutter/color.dart';
+import 'package:meituan/screen/screen_1.dart';
+import 'package:meituan/screen/screen_2.dart';
+import 'package:meituan/screen/screen_3.dart';
+import 'package:meituan/screen/screen_4.dart';
+import 'package:meituan/color.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:spacecraftflutter/main.dart';
-import 'package:spacecraftflutter/home.dart';
-import 'package:spacecraftflutter/splash.dart';
+import 'package:meituan/main.dart';
+import 'package:meituan/home.dart';
+import 'package:meituan/splash.dart';
 
 typedef PathWidgetBuilder = Widget Function(BuildContext, String);
 
