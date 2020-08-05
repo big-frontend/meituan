@@ -103,97 +103,71 @@ class TextIconItem extends StatelessWidget {
   }
 }
 
-class ImageText {
-  ImageText({this.height, this.url, this.title, this.subtitle, this.price});
-  final double height;
-  final String url;
-  final String title;
-  final String subtitle;
-  final String price;
+class ImageTextItemTheme extends InheritedTheme {
+  const ImageTextItemTheme();
+  static ImageTextItemTheme of(BuildContext context) {
+    final ImageTextItemTheme result =
+        context.dependOnInheritedWidgetOfExactType<ImageTextItemTheme>();
+    return result ?? const ImageTextItemTheme();
+  }
+
+  @override
+  bool updateShouldNotify(ListTileTheme oldWidget) {
+    return true;
+  }
+
+  @override
+  Widget wrap(BuildContext context, Widget child) {
+    final ListTileTheme ancestorTheme =
+        context.findAncestorWidgetOfExactType<ListTileTheme>();
+    return identical(this, ancestorTheme) ? child : ListTileTheme();
+  }
 }
 
 class ImageTextItem extends StatelessWidget {
-  ImageTextItem({this.item});
-  final ImageText item;
+  final Widget leading;
+  final Widget title;
+  final Widget subtitle;
+  final Widget price;
+  final double height;
+  const ImageTextItem({
+    this.leading,
+    this.title,
+    this.subtitle,
+    this.price,
+    this.height,
+  });
   @override
   Widget build(BuildContext context) {
     Container c = Container(
-      margin: EdgeInsets.only(left: 8, right: 8),
+      alignment: Alignment.center,
+      margin: EdgeInsets.all(8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // Image.asset(item.url, width: 50, height: 50),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: FadeInImage.assetNetwork(
-              placeholder: 'assets/bg_customReview_image_default.png',
-              image: item.url,
-              imageErrorBuilder: (BuildContext c, Object o, StackTrace s) {},
-              width: 90,
-              height: 90,
-            ),
-          ),
-          // ListTile(
-          //   title:
-          //       Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
-          //   subtitle:
-          //       Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
+          // Expanded(
+          //   child: Column(
+          //       // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //       // crossAxisAlignment: CrossAxisAlignment.stretch,
+          //       children: [leading]),
           // ),
-
-          Container(
-            margin: EdgeInsets.only(left: 18),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // ListTile(
-                //   title: Text(item.subtitle,
-                //       maxLines: 1,
-                //       style: TextStyle(fontWeight: FontWeight.normal)),
-                // ),
-
-                Text(
-                  item.price,
-                  style: TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold),
-                ),
-              ],
+          leading,
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 18),
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(children: <Widget>[Expanded(child: title)]),
+                  Row(children: <Widget>[Expanded(child: subtitle)]),
+                  price,
+                ],
+              ),
             ),
           )
         ],
       ),
     );
-    // return item.height != null
-    //     ? SizedBox(
-    //         height: item.height,
-    //         child: c,
-    //       )
-    //     : c;
-    return Align(
-      alignment: Alignment.center,
-      child: ListTile(
-        trailing: Text(
-          item.price,
-          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-        ),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: FadeInImage.assetNetwork(
-            placeholder: 'assets/bg_customReview_image_default.png',
-            image: item.url,
-            imageErrorBuilder: (BuildContext c, Object o, StackTrace s) {},
-            // width: 100,
-            // height: 100,
-          ),
-        ),
-        subtitle: Text(
-          item.subtitle,
-        ),
-        title: Text(
-          item.title,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
+    return height != null ? SizedBox(height: height, child: c) : c;
   }
 }

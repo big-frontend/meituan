@@ -3,8 +3,10 @@ import 'package:meta/meta.dart';
 import 'package:spacecraftflutter/routes.dart';
 import 'package:spacecraftflutter/splash.dart';
 import 'package:spacecraftflutter/share_data.dart';
+import 'package:flutter/rendering.dart';
 
 void main() {
+  // debugPaintSizeEnabled = true;
   runApp(MyApp());
 }
 
