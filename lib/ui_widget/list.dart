@@ -422,20 +422,65 @@ class _AutoLoadMoreLayoutState extends State<AutoLoadMoreLayout> {
   }
 }
 
-class RefreshIndicatorWrapper extends StatefulWidget {
-  final Widget child;
-  final RefreshCallback loadMorePosts;
-  const RefreshIndicatorWrapper({this.child, this.loadMorePosts});
+typedef F<T> = Future<T> Function();
+
+class RefreshIndicatorWrapper<T> extends StatefulWidget {
+  final AsyncWidgetBuilder<T> builder;
+  final F<T> future;
+  const RefreshIndicatorWrapper({@required this.builder, this.future});
   @override
-  State<StatefulWidget> createState() => _RefreshIndicatorWrapperState();
+  State<StatefulWidget> createState() => _RefreshIndicatorWrapperState<T>();
 }
 
-class _RefreshIndicatorWrapperState extends State<RefreshIndicatorWrapper> {
+class _RefreshIndicatorWrapperState<T>
+    extends State<RefreshIndicatorWrapper<T>> {
+  bool isFirst = true;
+  AsyncSnapshot<T> _snapshot;
+  Widget child = Text('jamesf');
+  Future<void> onRefresh() async {
+    widget.future().then((v) {
+      _snapshot = AsyncSnapshot<T>.withData(ConnectionState.done, v);
+      child = widget.builder(context, _snapshot);
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: widget.loadMorePosts,
-      child: widget.child,
-    );
+    if (isFirst) {
+      isFirst = false;
+      return Center(
+          child: FutureBuilder<T>(
+        future: widget.future(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          // 请求已结束
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasError) {
+              // 请求失败，显示错误
+              return Text("Error: ${snapshot.error}");
+            } else {
+              // 请求成功，显示数据
+              return RefreshIndicator(
+                onRefresh: onRefresh,
+                child: widget.builder(context, snapshot),
+              );
+            }
+          } else {
+            // 请求未结束，显示loading
+            return CircularProgressIndicator();
+          }
+        },
+      ));
+    } else {
+      return RefreshIndicator(
+        onRefresh: onRefresh,
+        child: child,
+      );
+    }
   }
 }

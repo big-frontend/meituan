@@ -85,3 +85,6 @@ lint/tmp/
 # lint/reports/
 .dart_tool
 .DS_Store
+.packages
+.packages
+pubspec.lock

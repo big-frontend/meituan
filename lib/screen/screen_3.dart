@@ -5,6 +5,9 @@ import 'package:meituan/ui_widget/button.dart';
 import 'package:meituan/ui_widget/list.dart';
 import 'dart:math';
 import 'package:flutter/src/foundation/change_notifier.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
+import 'package:meituan/order_list_model.dart';
 
 class Screen_3 extends StatefulWidget {
   @override
@@ -12,120 +15,31 @@ class Screen_3 extends StatefulWidget {
 }
 
 class _Screen_3_State extends State<Screen_3> {
-  // Screen_3_ViewModel vm;
-  List<ImageText> imagetextList = [
-    ImageText(
-        url: 'https://picsum.photos/250?image=9',
-        title: '南京大排档',
-        subtitle: '部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单',
-        price: '85元'),
-    ImageText(
-        url: 'https://picsum.photos/250?image=10',
-        title: '南京大排档',
-        subtitle:
-            '全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单',
-        price: '85元'),
-    ImageText(
-        url: 'https://picsum.photos/250?image=9',
-        title: '南京大排档',
-        subtitle: '全订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部',
-        price: '85元'),
-    ImageText(
-        url: 'https://picsum.photos/250?image=10',
-        title: '南京大排档',
-        subtitle:
-            '全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单',
-        price: '85元'),
-    ImageText(
-        url: 'https://picsum.photos/250?image=9',
-        title: '南京大排档',
-        subtitle: '单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单全部订单',
-        price: '85元'),
-  ];
   @override
-  void initState() {
-    // vm = Screen_3_ViewModel();
-    _loadMorePosts();
+  void initState() {}
+
+  Future<List<ImageText>> _loadMorePosts() async {
+    List<dynamic> re = await Future.wait([
+      rootBundle.loadString('assets/json/order_list.json'),
+      Future.delayed(Duration(seconds: 1)),
+    ]);
+    return getDataList(re[0]);
   }
 
-  Future<void> _loadMorePosts() {
-    return Future.delayed(Duration(seconds: 2)).then((value) {
-      setState(() {
-        // imagetextList
-      });
-    });
+  List<ImageText> getDataList(rawData) {
+    return shuffle(Order.fromJson(json.decode(rawData)).data)
+        .map((e) => ImageText(
+            url: 'https://picsum.photos/250?image=${gen()}',
+            // url: e.imgurl,
+            title: e.mname,
+            subtitle: e.title,
+            price: e.price))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     Options opt = Options.of(context);
-    Widget body;
-    if (imagetextList.length == 0) {
-      body = ListView.builder(
-        padding: EdgeInsets.zero,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(title: Text('empty'));
-        },
-        itemCount: 1,
-      );
-    } else {
-      body = ListView.separated(
-        // physics: const NeverScrollableScrollPhysics(),
-        // primary: false,
-        padding: EdgeInsets.zero,
-        itemBuilder: (BuildContext context, int index) {
-          ImageText item = imagetextList[index];
-          Widget itemWidget;
-          if (index % 2 == 0) {
-            itemWidget = ImageTextItem(
-              leading: Image(image: NetworkImage(item.url), height: 100),
-              title: Text(item.title,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(item.subtitle),
-              price: Text(item.price,
-                  style: TextStyle(
-                      color: Colors.green, fontWeight: FontWeight.bold)),
-            );
-          } else {
-            itemWidget = ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: FadeInImage.assetNetwork(
-                    placeholder:
-                        'images/home/bg_customReview_image_default.png',
-                    image: item.url),
-              ),
-              title: Text(item.title,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 6, bottom: 6),
-                    child: Text(item.subtitle),
-                  ),
-                  Text(
-                    item.price,
-                    style: TextStyle(
-                        color: Colors.green, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            );
-          }
-          return itemWidget;
-          // return Container(
-          //     decoration: BoxDecoration(
-          //         border: Border(bottom: BorderSide(width: 0.3))),
-          //     child: item);
-        },
-        itemCount: imagetextList.length,
-        separatorBuilder: (BuildContext context, int index) {
-          return Divider(thickness: 0.3, color: Colors.black38);
-        },
-      );
-    }
     return NestedScrollView(
         headerSliverBuilder: (context, innerBoxScrolled) => [
               SliverAppBar(
@@ -217,12 +131,91 @@ class _Screen_3_State extends State<Screen_3> {
                 ),
               ),
             ],
-        body: RefreshIndicator(onRefresh: _loadMorePosts, child: body));
+        body: RefreshIndicatorWrapper<List<ImageText>>(
+            future: _loadMorePosts,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              return createList(snapshot.data);
+            }));
+  }
+
+  Widget createList(List<ImageText> imagetextList) {
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      itemBuilder: (BuildContext context, int index) {
+        ImageText item = imagetextList[index];
+        Widget itemWidget;
+        // if (index % 2 == 0) {
+        if (true) {
+          itemWidget = ImageTextItem(
+            // leading: Image(
+            //     image: NetworkImage(item.url),
+            //     height: 100),
+            leading: FadeInImage.assetNetwork(
+              image: item.url,
+              height: 100,
+              placeholder: 'images/home/bg_customReview_image_default.png',
+            ),
+            title:
+                Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text(item.subtitle),
+            price: Text(item.price,
+                style: TextStyle(
+                    color: Colors.green, fontWeight: FontWeight.bold)),
+          );
+        } else {
+          itemWidget = ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: FadeInImage.assetNetwork(
+                  placeholder: 'images/home/bg_customReview_image_default.png',
+                  image: item.url),
+            ),
+            title:
+                Text(item.title, style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 6, bottom: 6),
+                  child: Text(item.subtitle),
+                ),
+                Text(
+                  item.price,
+                  style: TextStyle(
+                      color: Colors.green, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          );
+        }
+        return itemWidget;
+        // return Container(
+        //     decoration: BoxDecoration(
+        //         border: Border(bottom: BorderSide(width: 0.3))),
+        //     child: item);
+      },
+      itemCount: imagetextList.length,
+      separatorBuilder: (BuildContext context, int index) {
+        return Divider(thickness: 0.3, color: Colors.black38);
+      },
+    );
   }
 
   var r = Random();
   int gen() {
     return r.nextInt(10);
+  }
+
+  List shuffle(List items) {
+    var random = new Random();
+    for (var i = items.length - 1; i > 0; i--) {
+      var n = random.nextInt(i + 1);
+      var temp = items[i];
+      items[i] = items[n];
+      items[n] = temp;
+    }
+    return items;
   }
 
   @override
@@ -232,19 +225,6 @@ class _Screen_3_State extends State<Screen_3> {
   }
 }
 
-// class Screen_3_ViewModel extends ChangeNotifier {
-//   List<ImageText> imagetextList = [];
-//   void addImageTexts(List<ImageText> items) {
-//     imagetextList.insertAll(0, items);
-//     notifyListeners();
-//   }
-
-//   void addImageText(ImageText item) {
-//     imagetextList.add(item);
-//     notifyListeners();
-//   }
-// }
-
 class ImageText {
   ImageText({this.height, this.url, this.title, this.subtitle, this.price});
   final double height;
@@ -252,4 +232,7 @@ class ImageText {
   final String title;
   final String subtitle;
   final String price;
+  @override
+  String toString() =>
+      '{"height":$height,"url":$url,"title":$title,"subtitle":$subtitle,"price":$price}';
 }
