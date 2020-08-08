@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Order {
   Server server;
-  List<Data> data;
+  List<OrderData> data;
   Tab tab;
   dynamic topics;
   String stid;
@@ -10,18 +10,28 @@ class Order {
   List<Stid> stids;
   Order.fromJson(Map<String, dynamic> json)
       : server = Server.fromJson(json['server']),
-        data = List.from(json['data']).map((e) => Data.fromJson(e)).toList(),
+        data =
+            List.from(json['data']).map((e) => OrderData.fromJson(e)).toList(),
         tab = Tab.fromJson(json['tab']),
         topics = json['topics'],
         stid = json['stid'],
         paging = Paging.fromJson(json['paging']),
         stids = List.from(json['stids']).map((e) => Stid.fromJson(e)).toList();
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'server': server,
+        'data': data,
+        'tab': tab,
+        'topics': topics,
+        'stid': stid,
+        'paging': paging,
+        'stids': stids,
+      };
   @override
   String toString() =>
       '{"server":$server,"data":$data,"tab":$tab,"topics":$topics,"stid":$stid,"paging":$paging,"stids":$stids}';
 }
 
-class Data {
+class OrderData {
   String mealcount;
   List<Pricecalendar> pricecalendar;
   String rating;
@@ -65,7 +75,7 @@ class Data {
   int deposit;
   List<AttrJson> attrJson;
   int status;
-  Data.fromJson(Map<String, dynamic> json)
+  OrderData.fromJson(Map<String, dynamic> json)
       : mealcount = json['mealcount'],
         pricecalendar = (List.from(json['pricecalendar']))
             .map((e) => Pricecalendar.fromJson(e))
@@ -193,4 +203,64 @@ class Tab {
         normalTitle = json['normalTitle'];
   @override
   String toString() => '{"tabTitle":$tabTitle,"normalTitle":$normalTitle}';
+}
+
+class Promotion {
+  String stid;
+  List<PromotionData> data;
+  Server server;
+  Paging paging;
+  Promotion.fromJson(Map<String, dynamic> json)
+      : stid = json['stid'],
+        server = Server.fromJson(json['server']),
+        data = List.from(json['data'])
+            .map((e) => PromotionData.fromJson(e))
+            .toList(),
+        paging = Paging.fromJson(json['paging']);
+  @override
+  String toString() =>
+      '{"stid":$stid,"server":$server,"paging":$paging,"data":$data}';
+}
+
+class PromotionData {
+  String typeface_color;
+  int position;
+  bool module;
+  String maintitle;
+  int type;
+  String deputytitle;
+  int solds;
+  int id;
+  Share share;
+  String title;
+  String deputy_typeface_color;
+  String tplurl;
+  String imageurl;
+  PromotionData.fromJson(Map<String, dynamic> json)
+      : typeface_color = json['typeface_color'],
+        position = json['position'],
+        module = json['module'],
+        maintitle = json['maintitle'],
+        type = json['type'],
+        deputytitle = json['deputytitle'],
+        solds = json['solds'],
+        id = json['id'],
+        share = Share.fromJson(json['share']),
+        title = json['title'],
+        deputy_typeface_color = json['deputy_typeface_color'],
+        tplurl = json['tplurl'],
+        imageurl = json['imageurl'];
+  @override
+  String toString() =>
+      '{"typeface_color":$typeface_color,"position":$position,"module":$module,"maintitle":$maintitle,"type":$type,"deputytitle":$deputytitle,"solds":$solds,"id":$id,"share":$share,"title":$title,"deputy_typeface_color":$deputy_typeface_color,"tplurl":$tplurl,"imageurl":$imageurl}';
+}
+
+class Share {
+  String message;
+  String url;
+  Share.fromJson(Map<String, dynamic> json)
+      : message = json['message'],
+        url = json['url'];
+  @override
+  String toString() => '{"message":$message,"url":$url}';
 }

@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

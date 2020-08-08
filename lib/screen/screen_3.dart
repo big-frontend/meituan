@@ -7,7 +7,8 @@ import 'dart:math';
 import 'package:flutter/src/foundation/change_notifier.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
-import 'package:meituan/order_list_model.dart';
+import 'package:meituan/model.dart';
+import 'package:meituan/util.dart';
 
 class Screen_3 extends StatefulWidget {
   @override
@@ -200,22 +201,6 @@ class _Screen_3_State extends State<Screen_3> {
         return Divider(thickness: 0.3, color: Colors.black38);
       },
     );
-  }
-
-  var r = Random();
-  int gen() {
-    return r.nextInt(10);
-  }
-
-  List shuffle(List items) {
-    var random = new Random();
-    for (var i = items.length - 1; i > 0; i--) {
-      var n = random.nextInt(i + 1);
-      var temp = items[i];
-      items[i] = items[n];
-      items[n] = temp;
-    }
-    return items;
   }
 
   @override

@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:meituan/ui_widget/appbar.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:meituan/model.dart';
+import 'package:meituan/ui_widget/list.dart';
+import 'package:meituan/ui_widget/item.dart';
+import 'package:meituan/util.dart';
+import 'package:meituan/color.dart';
+import 'package:meituan/webview.dart';
 
 class Screen_1 extends StatefulWidget {
   @override
@@ -7,104 +15,233 @@ class Screen_1 extends StatefulWidget {
 }
 
 class _Screen_1_State extends State<Screen_1> {
-  int _selectedIndex = 0;
+  var menuInfos = [
+    {'title': '美食', 'icon': 'images/home/icon_homepage_food_category.png'},
+    {'title': '电影', 'icon': 'images/home/icon_homepage_movie_category.png'},
+    {'title': '酒店', 'icon': 'images/home/icon_homepage_hotel_category.png'},
+    {'title': 'KTV', 'icon': 'images/home/icon_homepage_ktv_category.png'},
+    {'title': '优惠买单', 'icon': 'images/home/icon_homepage_default.png'},
+    {
+      'title': '周边游',
+      'icon': 'images/home/icon_homepage_foottreat_category.png'
+    },
+    {
+      'title': '生活服务',
+      'icon': 'images/home/icon_homepage_life_service_category.png'
+    },
+    {
+      'title': '休闲娱乐',
+      'icon': 'images/home/icon_homepage_entertainment_category.png'
+    },
+    {'title': '丽人/美发', 'icon': 'images/home/icon_homepage_beauty_category.png'},
+    {'title': '购物', 'icon': 'images/home/icon_homepage_shopping_category.png'},
+    {'title': '丽人/美发', 'icon': 'images/home/icon_homepage_beauty_category.png'},
+    {'title': '电影', 'icon': 'images/home/icon_homepage_movie_category.png'},
+    {
+      'title': '周边游',
+      'icon': 'images/home/icon_homepage_foottreat_category.png'
+    },
+    {'title': '酒店', 'icon': 'images/home/icon_homepage_hotel_category.png'},
+    {'title': '优惠买单', 'icon': 'images/home/icon_homepage_default.png'},
+    {
+      'title': '休闲娱乐',
+      'icon': 'images/home/icon_homepage_entertainment_category.png'
+    },
+    {'title': 'KTV', 'icon': 'images/home/icon_homepage_ktv_category.png'},
+  ];
 
-  _onSelected(int index) {
-    setState(() => _selectedIndex = index);
+  Future<HomeData> _loadMorePosts() async {
+    List<dynamic> re = await Future.wait([
+      rootBundle.loadString('assets/json/order_list.json'),
+      rootBundle.loadString('assets/json/banner_list.json'),
+      Future.delayed(Duration(seconds: 2))
+    ]);
+    return getDataList(re);
   }
 
-  List<String> _list = List.generate(100, (i) => 'item $i');
+  HomeData getDataList(ret) {
+    List<OrderData> orderDatas =
+        shuffle(Order.fromJson(json.decode(ret[0])).data);
+    List<PromotionData> promotionDatas =
+        shuffle(Promotion.fromJson(json.decode(ret[1])).data);
+    return HomeData(promotionDatas: promotionDatas, orderDatas: orderDatas);
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget divider2 = Divider(thickness: 10, color: Colors.green);
     return Scaffold(
-      backgroundColor: Colors.blue,
       appBar: Searchbar(),
-      // appBar: AppBar(
-      //   title: Text('Flutter Search'),
-      //   actions: <Widget>[
-      //     IconButton(
-      //       icon: Icon(Icons.search),
-      //       onPressed: () async {
-      //         String r = await showSearch<String>(
-      //           context: context,
-      //           delegate: ListSearchPage(_list),
-      //         );
-      //         Scaffold.of(context).showSnackBar(
-      //           SnackBar(
-      //             content: Text(r),
-      //             action: SnackBarAction(
-      //               label: 'CLOSE',
-      //               onPressed: () {},
-      //             ),
-      //           ),
-      //         );
-      //       },
-      //     )
-      //   ],
-      // ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.separated(
-              itemCount: 4,
-              // itemExtent: 150.0, //强制高度为50.0
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  color: _selectedIndex != null && _selectedIndex == index
-                      ? Colors.red
-                      : Colors.white,
-                  child: ListTile(
-                    title: Text(
-                      "$index",
+      body: Material(
+          child: RefreshIndicatorWrapper<HomeData>(
+              future: _loadMorePosts,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                return createList(snapshot.data);
+              })),
+    );
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+  }
+
+  Widget createList(HomeData data) {
+    List<OrderData> orderDatas = data.orderDatas;
+    List<PromotionData> promotionDatas = data.promotionDatas;
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          pinned: false,
+          backgroundColor: Colors.white,
+          expandedHeight: 100.0,
+          flexibleSpace: FlexibleSpaceBar(
+            background: Container(
+              margin: EdgeInsets.only(left: 8, right: 8, top: 12),
+              alignment: Alignment.center,
+              child: PageView.builder(
+                itemCount: 2,
+                itemBuilder: (BuildContext context, int pageIndex) {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5, //Grid按两列显示
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 8.0,
+                      childAspectRatio: 2.0,
                     ),
-                    onTap: () => _onSelected(index),
+                    itemCount: 10,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (pageIndex == 1) {
+                        index = index + 10;
+                      }
+                      if (index >= menuInfos.length) return Text('');
+                      var i = menuInfos[index];
+                      return ClipOval(child: Image.asset(i['icon']));
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        SliverList(
+            delegate: new SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+          return Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom:
+                          BorderSide(color: Colors.grey[200], width: 10.0))));
+        }, childCount: 1)),
+        SliverPadding(
+          padding: const EdgeInsets.all(8.0),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, //Grid按两列显示
+              // mainAxisSpacing: 1.0,
+              // crossAxisSpacing: 1.0,
+              childAspectRatio: 2.0,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                var p = promotionDatas[index];
+                var ret = index % 4;
+                Border border;
+                if (ret == 0) {
+                  border = Border(bottom: BorderSide(width: 0.3));
+                } else if (ret == 1) {
+                  border = Border(left: BorderSide(width: 0.3));
+                } else if (ret == 2) {
+                  border = Border(right: BorderSide(width: 0.3));
+                } else if (ret == 3) {
+                  border = Border(top: BorderSide(width: 0.3));
+                }
+                return GestureDetector(
+                  onTap: () =>
+                      Webview.openWebview(context, p.tplurl.split('=')[1]),
+                  child: Container(
+                    decoration: BoxDecoration(border: border),
+                    padding: EdgeInsets.all(8),
+                    alignment: Alignment.center,
+                    // color: Colors.cyan[100 * (index % 9)],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              p.maintitle,
+                              style: TextStyle(
+                                  color: HexColor.fromHex(p.typeface_color)),
+                            ),
+                            Text(p.deputytitle),
+                          ],
+                        ),
+                        ClipOval(
+                          child: FadeInImage.assetNetwork(
+                            image: 'https://picsum.photos/250?image=${gen()}',
+                            height: 55,
+                            placeholder:
+                                'images/home/bg_customReview_image_default.png',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
-              separatorBuilder: (BuildContext context, int index) {
-                return divider2;
-              },
+              childCount: promotionDatas.length,
             ),
           ),
-
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: <Widget>[
-          //     Text(
-          //       "商品列表",
-          //       style: TextStyle(backgroundColor: Colors.tealAccent),
-          //     ),
-          //     Text(
-          //       "商品列表",
-          //       style: TextStyle(backgroundColor: Colors.tealAccent),
-          //     ),
-          //   ],
-          // ),
-
-          ListTile(
-            trailing: Text("trailing"),
-            leading: Text(
-              "leading",
-            ),
-            subtitle: Text(
-              "subtitle",
-            ),
-            title: Text(
-              "商品列表",
-              style: TextStyle(backgroundColor: Colors.tealAccent),
-            ),
+        ),
+        SliverList(
+            delegate: new SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+          return Column(children: <Widget>[
+            Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom:
+                            BorderSide(color: Colors.grey[200], width: 10.0)))),
+            Container(
+                decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(width: 0.3))),
+                padding: EdgeInsets.only(left: 8),
+                child: TextIconItem(
+                  height: 40,
+                  item: Item(leftText: '猜你喜欢'),
+                )),
+          ]);
+        }, childCount: 1)),
+        SliverList(
+          delegate: new SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              OrderData item = orderDatas[index];
+              var iti = ImageTextItem(
+                leading: FadeInImage.assetNetwork(
+                  // image: item.imgurl,
+                  image: 'https://picsum.photos/250?image=${gen()}',
+                  height: 100,
+                  placeholder: 'images/home/bg_customReview_image_default.png',
+                ),
+                title: Text(item.mname,
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(item.title),
+                price: Text(item.price,
+                    style: TextStyle(
+                        color: Colors.green, fontWeight: FontWeight.bold)),
+              );
+              return Container(
+                  decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(width: 0.3))),
+                  child: iti);
+            },
+            childCount: orderDatas.length, //0个列表项
           ),
-          // SizedBox(
-          //   height: MediaQuery.of(context).size.height - 24 - 56 - 56,
-          //   child: ListView.builder(
-          //       itemCount: 3,
-          //       itemBuilder: (BuildContext context, int index) {
-          //         return ListTile(title: Text("$index"));
-          //       }),
-          // ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -113,4 +250,10 @@ class _Screen_1_State extends State<Screen_1> {
     super.didChangeDependencies();
     print("screen 1 didChangeDependencies");
   }
+}
+
+class HomeData {
+  final List<PromotionData> promotionDatas;
+  final List<OrderData> orderDatas;
+  const HomeData({this.promotionDatas, this.orderDatas});
 }
