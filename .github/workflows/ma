@@ -5,10 +5,10 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-on:
-  push:
-    tags:
-      - '*'
+#on:
+#  push:
+#    tags:
+#      - '*'
 jobs:
   build:
     name: Build APK
