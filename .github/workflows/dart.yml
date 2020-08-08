@@ -1,14 +1,14 @@
 name: Dart CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
 # on:
-#  push:
-#    tags:
-#      - '*'
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+on:
+ push:
+   tags:
+     - '*'
 jobs:
   build:
     name: Build APK
