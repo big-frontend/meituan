@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   provider: ^4.1.2
   json_serializable: ^3.3.0
+  webview_flutter: ^0.3.22+1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -36,7 +37,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.0.0
   json_serializable: ^3.0.0
-  webview_flutter: ^0.3.22+1
+  effective_dart: ^1.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

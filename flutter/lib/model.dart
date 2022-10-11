@@ -8,6 +8,7 @@ class Order {
   String stid;
   Paging paging;
   List<Stid> stids;
+  //命名构造函数
   Order.fromJson(Map<String, dynamic> json)
       : server = Server.fromJson(json['server']),
         data =
